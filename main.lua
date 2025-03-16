@@ -3,6 +3,9 @@ function love.load()
     anim8 = require 'libraries/anim8'
     love.graphics.setDefaultFilter("nearest", "nearest")
 
+    sti = require 'libraries/sti'
+    gameMap = sti('maps/testMap.lua')
+
     -- {} mean that player is set to be an empty table
     player = {}
     player.x = 400
@@ -59,8 +62,8 @@ function love.update(dt)
 end
 
 function love.draw()
-    love.graphics.draw(background, 0, 0)
+    gameMap:draw()
     --nil mean do not change rotation, after will be a scale
     --animations:draw(image, x,y, angle, sx, sy, ox, oy, kx, ky)
-    player.anim:draw(player.spriteSheet, player.x, player.y, nil, 10)
+    player.anim:draw(player.spriteSheet, player.x, player.y, nil, 6)
 end
