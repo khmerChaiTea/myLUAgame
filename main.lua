@@ -1,4 +1,7 @@
 function love.load()
+    camera = require 'libraries/camera'
+    cam = camera()
+
     --help split grid for sheet to animate
     anim8 = require 'libraries/anim8'
     love.graphics.setDefaultFilter("nearest", "nearest")
@@ -59,11 +62,44 @@ function love.update(dt)
     end
 
     player.anim:update(dt)
+
+    cam:lookAt(player.x, player.y)
+
+    local w = love.graphics.getWidth()
+    local h = love.graphics.getHeight()
+
+    --left border
+    if cam.x < w/2 then
+        cam.x = w/2
+    end
+
+    --top border
+    if cam.y < h/2 then
+        cam.y = h/2
+    end
+
+    local mapW = gameMap.width * gameMap.tilewidth
+    local mapH = gameMap.height * gameMap.tileheight
+
+    --right border
+    if cam.x > (mapW - w/2) then
+        cam.x = (mapW - w/2)
+    end
+
+    --bottom border
+    if cam.y > (mapH - h/2)then
+        cam.y = (mapH - h/2)
+    end
+
+    
 end
 
 function love.draw()
-    gameMap:draw()
-    --nil mean do not change rotation, after will be a scale
-    --animations:draw(image, x,y, angle, sx, sy, ox, oy, kx, ky)
-    player.anim:draw(player.spriteSheet, player.x, player.y, nil, 6)
+    cam:attach()
+        gameMap:drawLayer(gameMap.layers["Ground"])
+        gameMap:drawLayer(gameMap.layers["Trees"])
+        --nil mean do not change rotation, after will be a scale
+        --animations:draw(image, x,y, angle, sx, sy, ox, oy, kx, ky)
+        player.anim:draw(player.spriteSheet, player.x, player.y, nil, 6, nil, 6, 9)
+    cam:detach()
 end
